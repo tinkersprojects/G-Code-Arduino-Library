@@ -18,28 +18,28 @@
 
 gcode::gcode()
 {
-  Serial.begin(115200);
-  Serial.println("v" +String(version)+" Simple G code");
 }
 
-gcode::gcode(int bitrate)
+gcode::gcode(commandscallback *commandscallbacks_temp)
 {
-  Serial.begin(bitrate);
-  Serial.println("v" +String(version)+" Simple G code");
-}
-
-gcode::gcode(int bitrate,void (*CallBack)())
-{
-  Serial.begin(bitrate);
-  Serial.println("v" +String(version)+" Simple G code");
-  CallBack = runCallback;
+  commandscallbacks = commandscallbacks_temp;
 }
 
 gcode::gcode(void (*CallBack)())
 {
-  Serial.begin(115200);
+  runCallback = CallBack;
+}
+
+void gcode::begin()
+{
+  Serial.begin(9600);
   Serial.println("v" +String(version)+" Simple G code");
-  CallBack = runCallback;
+}
+
+void gcode::begin(int bitrate)
+{
+  Serial.begin(bitrate);
+  Serial.println("v" +String(version)+" Simple G code");
 }
 
 
@@ -47,12 +47,12 @@ gcode::gcode(void (*CallBack)())
 
 void gcode::clearBuffer()
 {
-    commadLetter = 0;
+    commandLetter = 0;
     commandBuffer = "";
     commandValue = 0;
 }
 
-void gcode::read()
+bool gcode::available()
 {
     while (Serial.available()) 
     {
@@ -62,25 +62,28 @@ void gcode::read()
         {
             if(commandBuffer != "")
             {
-                if(commadLetter == 0)
+                if(commandLetter == 0)
                 {
-                    commandsList[0] = toDouble(commandBuffer);
+                    commandsList[0] = commandBuffer.toDouble();
                 }
-                else if(commadLetter >= 'A' && commadLetter <= 'Z')
+                else if(commandLetter >= 'A' && commandLetter <= 'Z')
                 {
-                    commandsList[commadLetter - 'A' + 1] = toDouble(commandBuffer);
+                    commandsList[commandLetter - 'A' + 1] = commandBuffer.toDouble();
                 }
 
                 // run if command matches
-                for(int i = 0; i < sizeof(commandscallbacks)/sizeof(commandscallback); i++)
+
+                for(int i = 0; i < 2 /*sizeof(commandscallbacks)*/; i++)
                 {
-                    if(commandscallbacks[i].includesValue == 1 && commandscallbacks[i].letter == commadLetter)
+                    commandscallback commandscallbackstest = commandscallbacks[i];
+
+                    if(commandscallbackstest.includesValue == 0 && (commandscallbackstest.letter == commandLetter || commandscallbackstest.letter-('a'-'A') == commandLetter))
                     {
-                        commandscallbacks[i].Callback();
+                        commandscallbackstest.Callback();
                     }
-                    if(commandscallbacks[i].includesValue == 0 && commandscallbacks[i].letter == commadLetter && commandscallbacks[i].value == toDouble(commandBuffer))
+                    if(commandscallbackstest.includesValue == 1 && (commandscallbackstest.letter == commandLetter || commandscallbackstest.letter-('a'-'A') == commandLetter) && commandscallbackstest.value == commandBuffer.toDouble())
                     {
-                        commandscallbacks[i].Callback();
+                        commandscallbackstest.Callback();
                     }
                 }
             }
@@ -90,61 +93,37 @@ void gcode::read()
         if(inChar == '\n')
         {
             // run
-            runCallback();
-            return;
+            restIsComment = false;
+            if(runCallback != NULL)
+                runCallback();
+            return true;
+        }
+
+        if(inChar == ';' || restIsComment)
+        {
+            restIsComment = true;
+            return false;
+        }
+
+        if(inChar >= 'a' && inChar <= 'z')
+        {
+            inChar = inChar - ('a'-'A');
         }
 
         if(inChar >= 'A' && inChar <= 'Z')
         {
             gcode::clearBuffer();
-            commadLetter = inChar;
-            return;
+            commandLetter = inChar;
+            return false;
         }
         
         if((inChar >= '0' && inChar <= '9') || inChar == '.' || inChar == '-')
         {
             commandBuffer = commandBuffer + String(inChar);
-            return;
+            return false;
         }
     }
-}
-
-
-
-
-
-
-void gcode::setCommand(char commandLetter, void (*CallBack)())
-{
-    //commandscallback* myarray = malloc(sizeof(commandscallbacks));
-    commandscallback* commandscallbacks_temp = realloc(commandscallbacks, sizeof(commandscallbacks) + sizeof(commandscallback));
-    if (commandscallbacks_temp) 
-    {
-        commandscallbacks_temp[sizeof(commandscallbacks)/sizeof(commandscallback)-1].letter = commandLetter;
-        commandscallbacks_temp[sizeof(commandscallbacks)/sizeof(commandscallback)-1].includesValue = 0;
-        commandscallbacks_temp[sizeof(commandscallbacks)/sizeof(commandscallback)-1].Callback = CallBack;
-    }
-    else
-    {
-        // deal with realloc failing because memory could not be allocated.
-    }
-}
-
-void gcode::setCommand(char commandLetter, double value, void (*CallBack)())
-{
-    //commandscallback* myarray = malloc(sizeof(commandscallbacks));
-    commandscallback* commandscallbacks_temp = realloc(commandscallbacks, sizeof(commandscallbacks) + sizeof(commandscallback));
-    if (commandscallbacks_temp) 
-    {
-        commandscallbacks_temp[sizeof(commandscallbacks)/sizeof(commandscallback)-1].letter = commandLetter;
-        commandscallbacks_temp[sizeof(commandscallbacks)/sizeof(commandscallback)-1].value = value;
-        commandscallbacks_temp[sizeof(commandscallbacks)/sizeof(commandscallback)-1].includesValue = 1;
-        commandscallbacks_temp[sizeof(commandscallbacks)/sizeof(commandscallback)-1].Callback = CallBack;
-    }
-    else
-    {
-        // deal with realloc failing because memory could not be allocated.
-    }
+    return false;
 }
 
 void gcode::comment(String comment)
@@ -157,15 +136,20 @@ void gcode::command(char number, double values)
   Serial.println(String(number)+String(values));
 }
 
-double gcode::GetValue(char commandLetter)
+double gcode::GetValue(char Letter)
 {
-    if(commadLetter == 0)
+    if(Letter >= 'a' && Letter <= 'z')
+    {
+        Letter = Letter - ('a'-'A');
+    }           
+    
+    if(Letter == ' ')
     {
         return commandsList[0];
     }
-    else if(commadLetter >= 'A' && commadLetter <= 'Z')
+    else if(Letter >= 'A' && Letter <= 'Z')
     {
-        return commandsList[commadLetter - 'A' + 1];
+        return commandsList[Letter - 'A' + 1];
     }
     return 0;
 }

@@ -9,43 +9,47 @@
 #include <wiring.h>
 #endif
 
+
+typedef void (*CallbackFunction) ();
+
+typedef struct commandscallback {
+    char letter;
+    double value;
+    boolean includesValue;
+    CallbackFunction Callback;
+};
+
 class gcode
 {
     public:
+    
+
         // SETUP 
         gcode();
-        gcode(int bitrate);
         gcode(void (*CallBack)());
-        gcode(int bitrate,void (*CallBack)());
-        void setCommand(char commandLetter, void (*CallBack)(double value));
-        void setCommand(char commandLetter, double value, void (*CallBack)());
+        gcode(commandscallback *commandscallbacks_temp);
+        void begin();
+        void begin(int bitrate);
 
         // SEND 
         void comment(String comment);
         void command(char number, double values);
         
         // receive
-        void read();
+        bool available();
         double GetValue(char commandLetter);
+        void clearBuffer();
         
     private:
-
-    char commadLetter = 0;
-    string commandBuffer = "";
-    double commandValue = 0;
-    double commandsList[27];
     
-    typedef void (*CallbackFunction) ();
-    CallbackFunction runCallback;
-
-    struct commandscallback {
-        char letter;
-        double value;
-        boolean includesValue;
-        CallbackFunction Callback;
-    } commandscallbacks[0];
-    
-    void clearBuffer()
+        commandscallback *commandscallbacks; 
+        CallbackFunction runCallback;
+        bool restIsComment = false;
+        char commandLetter = 0;
+        String commandBuffer = "";
+        double commandValue = 0;
+        double commandsList[27];
+        
 };
 
 #endif 

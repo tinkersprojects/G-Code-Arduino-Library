@@ -1,13 +1,36 @@
-#include <RGB_LED.h>
+#include <gcode.h>
 
-RGB_LED LED(9,10,11);
+void homing();
+void absoluteMode();
+void relativeMode();
+gcode code(9600);
 
-void setup() 
+void setup()
 {
-  LED.setFunction(Step);
+  code.setCommand('G', 28, homing);
+  code.setCommand('G', 90, absoluteMode);
+  code.setCommand('G', 91, relativeMode);
 }
 
 void loop() 
 {
-   LED.run();
+  if(code.available())
+  {
+    
+  }
+}
+
+void homing()
+{
+
+}
+
+void absoluteMode()
+{
+
+}
+
+void relativeMode()
+{
+
 }

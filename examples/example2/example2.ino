@@ -1,33 +1,36 @@
-#include <RGB_LED.h>
+#include <gcode.h>
 
-#define upButtonPin 4
-#define downButtonPin 5
+void homing();
+void absoluteMode();
+void relativeMode();
+gcode code(9600);
 
-unsigned int speed = 1000;
-
-RGB_LED LED(9,10,11);
-
-void setup() 
+void setup()
 {
-  pinMode(upButtonPin,INPUT);
-  pinMode(downButtonPin,INPUT);
-  LED.setFunction(Fade);
+  code.setCommand('G', 28, homing);
+  code.setCommand('G', 90, absoluteMode);
+  code.setCommand('G', 91, relativeMode);
 }
 
 void loop() 
 {
-   LED.run();
+  if(code.available())
+  {
+    
+  }
+}
 
-   if(digitalRead(downButtonPin)==HIGH && speed<100)
-   {
-      speed--;
-      LED.setSpeed(speed);
-      LED.delay(10);
-   }
-   if(digitalRead(upButtonPin)==HIGH && speed>20000)
-   {
-      speed++;
-      LED.setSpeed(speed);
-      LED.delay(10);
-   }
+void homing()
+{
+
+}
+
+void absoluteMode()
+{
+
+}
+
+void relativeMode()
+{
+
 }
