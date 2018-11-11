@@ -1,14 +1,15 @@
 # G-Code Arduino Library (working progress, no examples yet)
 This is a library that alows any machine or robot to be controlled by G-Code
 
-### Features
+#### Features
 
-## What is G-Code?
+### What is G-Code?
 
-## Why make this library?
+### Why make this library?
 
-## How it works?
+### How it works?
 
+### Why use this?
 
 ## Functions
 ### SETUP
