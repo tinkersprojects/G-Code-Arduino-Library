@@ -13,9 +13,7 @@
 typedef void (*CallbackFunction) ();
 
 typedef struct commandscallback {
-    char letter;
-    double value;
-    boolean includesValue;
+    String value;
     CallbackFunction Callback;
 };
 
@@ -37,6 +35,7 @@ class gcode
         
         // receive
         bool available();
+        bool available(char inChar);
         double GetValue(char commandLetter);
         void clearBuffer();
         

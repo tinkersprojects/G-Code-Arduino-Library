@@ -57,71 +57,75 @@ bool gcode::available()
     while (Serial.available()) 
     {
         char inChar = (char)Serial.read();
-
-        if(inChar == ' ' || inChar == '\n')
+        if(gcode::available(inChar))
         {
-            if(commandBuffer != "")
-            {
-                if(commandLetter == 0)
-                {
-                    commandsList[0] = commandBuffer.toDouble();
-                }
-                else if(commandLetter >= 'A' && commandLetter <= 'Z')
-                {
-                    commandsList[commandLetter - 'A' + 1] = commandBuffer.toDouble();
-                }
-
-                // run if command matches
-
-                for(int i = 0; i < 2 /*sizeof(commandscallbacks)*/; i++)
-                {
-                    commandscallback commandscallbackstest = commandscallbacks[i];
-
-                    if(commandscallbackstest.includesValue == 0 && (commandscallbackstest.letter == commandLetter || commandscallbackstest.letter-('a'-'A') == commandLetter))
-                    {
-                        commandscallbackstest.Callback();
-                    }
-                    if(commandscallbackstest.includesValue == 1 && (commandscallbackstest.letter == commandLetter || commandscallbackstest.letter-('a'-'A') == commandLetter) && commandscallbackstest.value == commandBuffer.toDouble())
-                    {
-                        commandscallbackstest.Callback();
-                    }
-                }
-            }
-            gcode::clearBuffer();
-        }
-
-        if(inChar == '\n')
-        {
-            // run
-            restIsComment = false;
-            if(runCallback != NULL)
-                runCallback();
             return true;
         }
+    }
+    return false;
+}
 
-        if(inChar == ';' || restIsComment)
+bool gcode::available(char inChar)
+{
+    if(inChar == ' ' || inChar == '\n')
+    {
+        if(commandBuffer != "")
         {
-            restIsComment = true;
-            return false;
-        }
+            if(commandLetter == 0)
+            {
+                commandsList[0] = commandBuffer.toDouble();
+            }
+            else if(commandLetter >= 'A' && commandLetter <= 'Z')
+            {
+                commandsList[commandLetter - 'A' + 1] = commandBuffer.toDouble();
+            }
 
-        if(inChar >= 'a' && inChar <= 'z')
-        {
-            inChar = inChar - ('a'-'A');
-        }
+            // run if command matches
 
-        if(inChar >= 'A' && inChar <= 'Z')
-        {
-            gcode::clearBuffer();
-            commandLetter = inChar;
-            return false;
+            for(int i = 0; i < 2 /*sizeof(commandscallbacks)*/; i++)
+            {
+                commandscallback commandscallbackstest = commandscallbacks[i];
+
+                if(commandscallbackstest.value == String(commandLetter)+String(commandBuffer) || commandscallbackstest.value == String(commandLetter-('a'-'A'))+String(commandBuffer))
+                {
+                    commandscallbackstest.Callback();
+                }
+            }
         }
-        
-        if((inChar >= '0' && inChar <= '9') || inChar == '.' || inChar == '-')
-        {
-            commandBuffer = commandBuffer + String(inChar);
-            return false;
-        }
+        gcode::clearBuffer();
+    }
+
+    if(inChar == '\n')
+    {
+        // run
+        restIsComment = false;
+        if(runCallback != NULL)
+            runCallback();
+        return true;
+    }
+
+    if(inChar == ';' || restIsComment)
+    {
+        restIsComment = true;
+        return false;
+    }
+
+    if(inChar >= 'a' && inChar <= 'z')
+    {
+        inChar = inChar - ('a'-'A');
+    }
+
+    if(inChar >= 'A' && inChar <= 'Z')
+    {
+        gcode::clearBuffer();
+        commandLetter = inChar;
+        return false;
+    }
+    
+    if((inChar >= '0' && inChar <= '9') || inChar == '.' || inChar == '-')
+    {
+        commandBuffer = commandBuffer + String(inChar);
+        return false;
     }
     return false;
 }
