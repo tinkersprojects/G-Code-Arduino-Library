@@ -1,4 +1,5 @@
-# G-Code Arduino Library (not working and no examples yet)
+# G-Code Arduino Library 
+This library is mostly woking but still working through some examples and debugging parts
 This is a library that alows any machine or robot to be controlled by G-Code
 
 #### Features
