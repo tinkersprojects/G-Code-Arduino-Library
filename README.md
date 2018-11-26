@@ -19,8 +19,8 @@ If your project requires computer control or a set of instruction, a library lik
 
 ## Functions
 ### SETUP
-#### gcode(), gcode(void (*CallBack)()), gcode(int numbercommands, commandscallback *commandArray), gcode(int numbercommands, commandscallback *commandArray, void (*CallBack)());
-#### void begin(), void begin(int bitrate)
+#### **gcode**(), **gcode**(void (*CallBack)()), **gcode**(int numbercommands, commandscallback *commandArray), **gcode**(int numbercommands, commandscallback *commandArray, void (*CallBack)());
+#### void **begin**(), void **begin**(int bitrate)
 
 ### SEND 
 #### void comment(String comment)
