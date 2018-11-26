@@ -19,19 +19,24 @@ If your project requires computer control or a set of instruction, a library lik
 
 ## Functions
 ### SETUP
-#### gcode**(),<br> gcode(void (*CallBack)()),<br> gcode(int numbercommands, commandscallback *commandArray),<br> gcode(int numbercommands, commandscallback *commandArray, void (*CallBack)());
-wer
+#### gcode(),<br> gcode(void (*CallBack)()),<br> gcode(int numbercommands, commandscallback *commandArray),<br> gcode(int numbercommands, commandscallback *commandArray, void (*CallBack)());
+This Function is used to declare this class so that it can be used in the program. There is 4 different functions, each with  variables that can be set. *CallBack* is used to link a call back function used after each command is available. *commandArray* is an array of callback that interupt the program to exucute the command. *Numbercommands* is the number of items with in commandArray.
+
 #### void begin(),<br> void begin(int bitrate)
+This Function must be called if the serial interface is wanting to be used. *Bitrate* is the bitrate of the serial port. If this is called, there is no need to *Serial.begin();*, it is appart of the begin function.
 
 ### SEND 
 #### void comment(String comment)
-#### void command(char number, double values)
+This Function is to send comments back through the serial. *Comment* would be the comment that would be sent back.
 
 ### RECEIVE
-#### bool available()
-#### bool available(char inChar)
+#### bool available(),<br> bool available(char inChar)
+
+
 #### double GetValue(char commandLetter)
-#### void clearBuffer()
+
+
+
 
 ## Example
 ### Example 1: CoreXY
