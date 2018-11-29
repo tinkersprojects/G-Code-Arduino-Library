@@ -95,14 +95,7 @@ void homing()
 
 void gotoLocation(double X,double Y)
 {
-  double YCurrent = 0.5*(stepperA.currentPosition() + stepperB.currentPosition());
-  double XCurrent = 0.5*(stepperA.currentPosition() - stepperB.currentPosition());
-  float angle = atan2(Y-YCurrent,X-XCurrent);
-  double angle1 = cos(angle);
-  double angle2 = sin(angle);
-  double XSpeed = angle1/(Speed);
-  double YSpeed = angle2/(Speed);
-
+  // Cal to come
 
   double ASpeed = XSpeed+YSpeed;
   double BSpeed = XSpeed-YSpeed;
