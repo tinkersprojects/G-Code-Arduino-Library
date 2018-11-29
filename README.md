@@ -6,21 +6,21 @@ This is a library that alows any machine or robot to be controlled by G-Code
 - Customisable 
 
 ### What is G-Code?
-G-Code is the the instructions that 3D Printer and CNC used to creat there part. G-Code is a set of instruction commands sent to the machines controller to to be performed. Posistion, feed rate and tool used are some of the items that G-Code can control. The G-Code can either be sent from the computer or saved on an SD card.
+G-Code is the instructions that 3D Printer and CNC used to create there part. G-Code is a set of instruction commands sent to the controller of the machine to be performed. Position, feed rate, and tool used are some of the items that G-Code can control. The G-Code can either be sent from the computer or saved on an SD card.
 
 ### Why make this library?
-This library allows any machine or robot to be controlled by G-Code. It make it quick and easy to setup with CNC and machine software and gives much better control over the communications and commands. 
+This library allows any machine or robot to be controlled by G-Code. It makes it quick and easy to set up with CNC and machine software and gives much better control over the communications and commands.
 
 ### Why use this?
-If your project requires computer control or a set of instruction, a library like this will help simplify this proccess of making it your self. 
+If your project requires computer control or a set of instruction, a library like this will help simplify this process of making it your self.
 
 ## Functions
 ### SETUP
 #### gcode(),<br> gcode(void (*CallBack)()),<br> gcode(int numbercommands, commandscallback *commandArray),<br> gcode(int numbercommands, commandscallback *commandArray, void (*CallBack)());
-This Function is used to declare this class so that it can be used in the program. There is 4 different functions, each with  variables that can be set. *CallBack* is used to link a call back function used after each command is available. *commandArray* is an array of callback that interupt the program to exucute the command. *Numbercommands* is the number of items with in commandArray.
+This Function is used to declare this class so that it can be used in the program. There are 4 different functions, each with variables that can be set. The *callback* is used to link a call back function used after each command is available. *commandArray* is an array of callback that interupt the program to execute the command. *Numbercommands* is the number of items within commandArray.
 
 #### void begin(),<br> void begin(int bitrate)
-This Function must be called if the serial interface is wanting to be used. *Bitrate* is the bitrate of the serial port. If this is called, there is no need to *Serial.begin();*, it is appart of the begin function.
+This Function must be called if the serial interface is wanting to be used. *Bitrate* is the bitrate of the serial port. If this is called, there is no need to *Serial.begin();*, it is apart of the begin function.
 
 ### SEND 
 #### void comment(String comment)
