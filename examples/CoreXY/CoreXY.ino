@@ -26,15 +26,11 @@ void gotoLocation(double X,double Y)
 {
   double YCurrent = 0.5*(stepperA.currentPosition() + stepperB.currentPosition());
   double XCurrent = 0.5*(stepperA.currentPosition() - stepperB.currentPosition());
-  float angle = atan2(Y-YCurrent,X-XCurrent);
-  double angle1 = cos(angle);
-  double angle2 = sin(angle);
-  double XSpeed = angle1/(Speed);
-  double YSpeed = angle2/(Speed);
+  double R = sqrt((Y-YCurrent)*(Y-YCurrent)+(X-XCurrent)*(X-XCurrent));
+  double t = R/Speed;
 
-
-  double ASpeed = XSpeed+YSpeed;
-  double BSpeed = XSpeed-YSpeed;
+  double Speeda = abs(a - stepperA.currentPosition())/t;
+  double Speedb = abs(b - stepperB.currentPosition())/t;
   double ANewPosition = X+Y;
   double BNewPosition = X-Y;
 
