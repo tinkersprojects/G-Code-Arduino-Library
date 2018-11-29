@@ -1,8 +1,8 @@
 #include <gcode.h>
 
 void homing();
-commandscallback wer[2] = {{'g',28,1,homing},{'g',22,1,homing}};
-gcode Commands(wer);
+commandscallback commands[1] = {{"g28",homing}};
+gcode Commands(1,commands);
 
 void setup()
 {
@@ -13,21 +13,16 @@ void loop()
 {
   if(Commands.available())
   {
-    gotoLocation(Commands.GetValue('X'),Commands.GetValue('Y'),Commands.GetValue('Z'));
+    gotoLocation(Commands.GetValue('X'),Commands.GetValue('Y'));
   }
 }
 
 void homing()
 {
-  gotoLocation(0,0,0);
+  // code to home machine
 }
 
-void gotoLocation(double x,double y,double z)
+void gotoLocation(double x,double y)
 {
-Serial.print(x);
-Serial.print(",");
-Serial.print(y);
-Serial.print(",");
-Serial.print(z);
-Serial.println("");
+  // code to run machine to location
 }
