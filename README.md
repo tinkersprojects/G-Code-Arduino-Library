@@ -1,5 +1,4 @@
-# G-Code Arduino Library (trying to debug and document)
-This library is mostly woking but still working through some examples and debugging parts
+# G-Code Arduino Library
 This is a library that alows any machine or robot to be controlled by G-Code
 
 #### Features
@@ -11,8 +10,6 @@ G-Code is the the instructions that 3D Printer and CNC used to creat there part.
 
 ### Why make this library?
 This library allows any machine or robot to be controlled by G-Code. It make it quick and easy to setup with CNC and machine software and gives much better control over the communications and commands. 
-
-### How it works?
 
 ### Why use this?
 If your project requires computer control or a set of instruction, a library like this will help simplify this proccess of making it your self. 
@@ -31,15 +28,12 @@ This Function is to send comments back through the serial. *Comment* would be th
 
 ### RECEIVE
 #### bool available(),<br> bool available(char inChar)
-
+This function reads the incoming data and returns true then the command is ready to for the program to read an control the machine. *InChar* is the input from a source like an SD card.
 
 #### double GetValue(char commandLetter)
-
-
-
+This function is to return the values for a command letter. *CommandLetter* is the command letter that is requested to be returned.
 
 ## Example
-
 ### Example 1: simplePloter
 
 ```c++
