@@ -95,10 +95,13 @@ void homing()
 
 void gotoLocation(double X,double Y)
 {
-  // Cal to come
+  double YCurrent = 0.5*(stepperA.currentPosition() + stepperB.currentPosition());
+  double XCurrent = 0.5*(stepperA.currentPosition() - stepperB.currentPosition());
+  double R = sqrt((Y-YCurrent)*(Y-YCurrent)+(X-XCurrent)*(X-XCurrent));
+  double t = R/Speed;
 
-  double ASpeed = XSpeed+YSpeed;
-  double BSpeed = XSpeed-YSpeed;
+  double Speeda = abs(a - stepperA.currentPosition())/t;
+  double Speedb = abs(b - stepperB.currentPosition())/t;
   double ANewPosition = X+Y;
   double BNewPosition = X-Y;
 
