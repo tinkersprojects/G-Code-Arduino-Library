@@ -25,9 +25,12 @@ class gcode
         // SETUP 
         gcode();
         gcode(void (*CallBack)());
-        gcode(commandscallback *commandscallbacks_temp);
+        gcode(int numbercommands, commandscallback *commandscallbacks_temp);
+        gcode(int numbercommands, commandscallback *commandscallbacks_temp, void (*CallBack)());
         void begin();
         void begin(int bitrate);
+        void begin(String nextComandcomment);
+        void begin(int bitrate, String nextComandcomment);
 
         // SEND 
         void comment(String comment);
@@ -40,7 +43,8 @@ class gcode
         void clearBuffer();
         
     private:
-    
+        String nextComandcommentString;
+        bool nextRead = false;
         commandscallback *commandscallbacks; 
         CallbackFunction runCallback;
         bool restIsComment = false;
@@ -48,6 +52,7 @@ class gcode
         String commandBuffer = "";
         double commandValue = 0;
         double commandsList[27];
+        int NumberOfCommands = 0;
         
 };
 
