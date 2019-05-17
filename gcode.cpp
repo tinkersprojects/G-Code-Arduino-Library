@@ -4,7 +4,7 @@
  *
  * This Library is licensed under a GPLv3 License
  **********************************************************************************************/
-#define version 1.0
+#define version 1.1
 
 #if ARDUINO >= 100
   #include "Arduino.h"
@@ -20,11 +20,19 @@ gcode::gcode()
 {
 }
 
-gcode::gcode(commandscallback *commandscallbacks_temp)
+gcode::gcode(int numbercommands, commandscallback *commandscallbacks_temp, void (*CallBack)())
 {
+  runCallback = CallBack;
   commandscallbacks = commandscallbacks_temp;
+  NumberOfCommands = numbercommands;
 }
 
+gcode::gcode(int numbercommands, commandscallback *commandscallbacks_temp)
+{
+  commandscallbacks = commandscallbacks_temp;
+  NumberOfCommands = numbercommands;
+}
+        
 gcode::gcode(void (*CallBack)())
 {
   runCallback = CallBack;
@@ -34,12 +42,28 @@ void gcode::begin()
 {
   Serial.begin(9600);
   Serial.println("v" +String(version)+" Simple G code");
+  nextComandcommentString = "OK!";
+}
+
+void gcode::begin(String nextComandcomment)
+{
+  Serial.begin(9600);
+  Serial.println("v" +String(version)+" Simple G code");
+  nextComandcommentString = nextComandcomment;
 }
 
 void gcode::begin(int bitrate)
 {
   Serial.begin(bitrate);
   Serial.println("v" +String(version)+" Simple G code");
+  nextComandcommentString = "OK!";
+}
+
+void gcode::begin(int bitrate, String nextComandcomment)
+{
+  Serial.begin(bitrate);
+  Serial.println("v" +String(version)+" Simple G code");
+  nextComandcommentString = nextComandcomment;
 }
 
 
@@ -54,10 +78,15 @@ void gcode::clearBuffer()
 
 bool gcode::available()
 {
+    if(nextRead)
+    {
+        this->comment(nextComandcommentString);
+        nextRead=false;
+    }
     while (Serial.available()) 
     {
         char inChar = (char)Serial.read();
-        if(gcode::available(inChar))
+        if(this->available(inChar))
         {
             return true;
         }
@@ -67,7 +96,7 @@ bool gcode::available()
 
 bool gcode::available(char inChar)
 {
-    if(inChar == ' ' || inChar == '\n')
+    if((inChar >= 'A' && inChar <= 'Z') || (inChar >= 'a' && inChar <= 'z') || inChar == ' ' || inChar == '\n')
     {
         if(commandBuffer != "")
         {
@@ -82,7 +111,7 @@ bool gcode::available(char inChar)
 
             // run if command matches
 
-            for(int i = 0; i < 2 /*sizeof(commandscallbacks)*/; i++)
+            for(int i = 0; i < NumberOfCommands; i++)
             {
                 commandscallback commandscallbackstest = commandscallbacks[i];
 
@@ -92,12 +121,13 @@ bool gcode::available(char inChar)
                 }
             }
         }
-        gcode::clearBuffer();
+        this->clearBuffer();
     }
 
     if(inChar == '\n')
     {
         // run
+        nextRead=true;
         restIsComment = false;
         if(runCallback != NULL)
             runCallback();
@@ -117,7 +147,7 @@ bool gcode::available(char inChar)
 
     if(inChar >= 'A' && inChar <= 'Z')
     {
-        gcode::clearBuffer();
+        this->clearBuffer();
         commandLetter = inChar;
         return false;
     }
@@ -132,7 +162,7 @@ bool gcode::available(char inChar)
 
 void gcode::comment(String comment)
 {
-  Serial.println(";" +String(comment));
+  Serial.println(String(comment));
 }
 
 void gcode::command(char number, double values)
