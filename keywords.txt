@@ -1,0 +1,32 @@
+#######################################
+# Library and class (KEYWORD1)
+#######################################
+
+gcode	KEYWORD1
+Commands	KEYWORD1
+
+
+
+#######################################
+# Functions (KEYWORD2)
+#######################################
+
+PLEX	            KEYWORD2
+begin	            KEYWORD2
+comment	            KEYWORD2
+command	            KEYWORD2
+available	        KEYWORD2
+available	        KEYWORD2
+availableValue	    KEYWORD2
+GetValue	        KEYWORD2
+clearBuffer	        KEYWORD2
+commandscallback	KEYWORD2
+
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+gcode_Buffer_size	    LITERAL1
+gcode_Buffer_version	LITERAL1

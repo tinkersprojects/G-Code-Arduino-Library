@@ -10,6 +10,13 @@
 #endif
 
 
+#define gcode_Buffer_version 2.0
+
+#ifndef gcode_Buffer_size
+    #define gcode_Buffer_size 20
+#endif 
+
+
 typedef void (*CallbackFunction) ();
 
 typedef struct commandscallback {
@@ -17,11 +24,11 @@ typedef struct commandscallback {
     CallbackFunction Callback;
 };
 
+
+
 class gcode
 {
     public:
-    
-
         // SETUP 
         gcode();
         gcode(void (*CallBack)());
@@ -39,20 +46,26 @@ class gcode
         // receive
         bool available();
         bool available(char inChar);
+        bool availableValue(char commandLetter);
         double GetValue(char commandLetter);
         void clearBuffer();
         
     private:
         String nextComandcommentString;
         bool nextRead = false;
-        commandscallback *commandscallbacks; 
-        CallbackFunction runCallback;
         bool restIsComment = false;
-        char commandLetter = 0;
-        String commandBuffer = "";
-        double commandValue = 0;
-        double commandsList[27];
+
+        commandscallback *commandscallbacks; 
         int NumberOfCommands = 0;
+
+        CallbackFunction runCallback;
+        //double commandsList[gcode_Buffer_size];
+        String commandBuffer;
+        struct BufferFormat {
+            char command;
+            double Value;
+        } BufferList[gcode_Buffer_size];
+        int BufferListCount = -1;
         
 };
 
