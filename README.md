@@ -143,7 +143,7 @@ void loop()
     if(Commands.availableValue('X'))
       newXValue = Commands.GetValue('X');
     if(Commands.availableValue('Y'))
-      newXValue = Commands.GetValue('Y');
+      newYValue = Commands.GetValue('Y');
 
     gotoLocation(newXValue,newYValue);
   }
