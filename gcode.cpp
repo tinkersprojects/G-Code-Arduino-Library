@@ -110,6 +110,7 @@ bool gcode::available(char inChar)
 
   if(inChar == '\n')
   {
+    Serial.println("Have \\n");
     nextRead=true;
     restIsComment = false;
     if(BufferListCount >= 0)
@@ -118,6 +119,8 @@ bool gcode::available(char inChar)
     for(int i = 0; i < gcode_Buffer_size; i++)
     {
       String testString = String(BufferList[i].command)+String(((int)BufferList[i].Value));
+      Serial.print("Teststing :");
+      Serial.println(testString);
 
       for(int j = 0; j < NumberOfCommands; j++)
       {
