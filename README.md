@@ -74,7 +74,7 @@ void OffLED()
 #include <gcode.h>
 
 void homing();
-commandscallback commands[1] = {{"g28",homing}};
+commandscallback commands[1] = {{"G28",homing}};
 gcode Commands(1,commands);
 
 double X;
@@ -120,7 +120,7 @@ void gotoLocation(double x,double y)
 #define Speed 100
 
 void homing();
-commandscallback commands[1] = {{"g28",homing}};
+commandscallback commands[1] = {{"G28",homing}};
 gcode Commands(1,commands);
 
 double X;
