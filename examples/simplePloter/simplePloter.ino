@@ -7,7 +7,7 @@ G28 - HOMING
 G29 - SET COORDINATES -> G29 X{n} Y{n}
 */
 #define NUMCOMMANDS 2
-commandscallback commands[NUMCOMMANDS] = {{"g28",homing}, {"g29", moviment}}; 
+commandscallback commands[NUMCOMMANDS] = {{"G28",homing}, {"G29", moviment}}; 
 gcode Commands(NUMCOMMANDS,commands);
 
 double X;
