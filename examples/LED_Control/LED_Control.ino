@@ -4,7 +4,7 @@
 #define NumberOfCommands 2
 
 void OnLED();
-void OffLED()
+void OffLED();
 commandscallback commands[NumberOfCommands] = {{"L1",OnLED},{"L2",OffLED}};
 gcode Commands(NumberOfCommands,commands);
 
