@@ -1,5 +1,5 @@
 /**********************************************************************************************
- * Arduino LED RGB Library - version 2.0
+ * Arduino GCode Library - version 2.1
  * by William Bailes <williambailes@gmail.com> http://tinkersprojects.com/
  *
  * This Library is licensed under a GPLv3 License
@@ -70,12 +70,32 @@ void gcode::begin(int bitrate, String nextComandcomment)
   this->clearBuffer();
 }
 
+void gcode::begin(void (*_nextComandCallBack)())
+{
+  Serial.begin(9600);
+  Serial.println("v" +String(gcode_Buffer_version)+" Simple G code");
+  nextComandCallBack = _nextComandCallBack;
+  this->clearBuffer();
+}
+
+void gcode::begin(int bitrate, void (*_nextComandCallBack)())
+{
+  Serial.begin(bitrate);
+  Serial.println("v" +String(gcode_Buffer_version)+" Simple G code");
+  nextComandCallBack = _nextComandCallBack;
+  this->clearBuffer();
+}
+
+
 
 /******************* receive *******************/
 
 void gcode::clearBuffer()
 {
   BufferListCount = -1;
+  commandBuffer = "";
+  nextRead = false;
+  restIsComment = false;
   for(int i = 0; i < gcode_Buffer_size; i++)
   {
     BufferList[i].command = 0;
@@ -87,14 +107,18 @@ bool gcode::available()
 {
   if(nextRead)
   {
-    this->comment(nextComandcommentString);
-    nextRead = false;
-    restIsComment = false;
+    if(nextComandCallBack != NULL)
+      nextComandCallBack();
+    else
+      this->comment(nextComandcommentString);
+    
     this->clearBuffer();
   }
   while (Serial.available()) 
   {
     char inChar = (char)Serial.read();
+    
+    //Serial.println(inChar);
     if(this->available(inChar))
     {
       return true;
@@ -108,7 +132,7 @@ bool gcode::available(char inChar)
   if(inChar == ' ')
     return false;
 
-  if(inChar == '\n')
+  if(inChar == '\n' || inChar == '\r')
   {
     nextRead=true;
     restIsComment = false;
@@ -122,6 +146,11 @@ bool gcode::available(char inChar)
       for(int j = 0; j < NumberOfCommands; j++)
       {
         commandscallback commandscallbackstest = commandscallbacks[j];
+
+        if(String(BufferList[i].command) == commandscallbackstest.value)
+        {
+          commandscallbackstest.Callback();
+        }
         
         if(testString == commandscallbackstest.value)
         {
@@ -146,12 +175,14 @@ bool gcode::available(char inChar)
   }
   else if(inChar > 32 && inChar < 127)
   {
-    if(inChar >= 'a' && inChar <= 'z')
+    //Serial.println("inChar:"+String(inChar)+", commandBuffer:"+String(commandBuffer));
+
+    if(inChar >= 'a' && inChar <= 'z') // if input is lower case
     {
-      inChar = inChar - ('a'-'A');
+      inChar = inChar - ('a'-'A');// convert all lower case to upper case
     }
 
-    if(BufferListCount+1 >= gcode_Buffer_size)
+    if(BufferListCount+1 >= gcode_Buffer_size) // if serial is larger than buffer
       return false;
 
     if(BufferListCount >= 0)
@@ -228,6 +259,7 @@ bool gcode::availableValue(char commandLetter)
   return false;
 }
 
+
 double gcode::GetValue(char commandLetter)
 {
   for(int i = 0; i < gcode_Buffer_size; i++)
@@ -241,6 +273,11 @@ double gcode::GetValue(char commandLetter)
 void gcode::comment(String comment)
 {
   Serial.println(comment);
+}
+
+void gcode::comment(char number, double values)
+{
+  Serial.println(String(number)+":"+String(values));
 }
 
 void gcode::command(char number, double values)

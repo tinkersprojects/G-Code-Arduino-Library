@@ -10,10 +10,10 @@
 #endif
 
 
-#define gcode_Buffer_version 2.0
+#define gcode_Buffer_version 2.1
 
 #ifndef gcode_Buffer_size
-    #define gcode_Buffer_size 20
+    #define gcode_Buffer_size 5
 #endif 
 
 
@@ -38,9 +38,12 @@ class gcode
         void begin(int bitrate);
         void begin(String nextComandcomment);
         void begin(int bitrate, String nextComandcomment);
+        void begin(void (*_nextComandCallBack)());
+        void begin(int bitrate, void (*_nextComandCallBack)());
 
         // SEND 
         void comment(String comment);
+        void comment(char number, double values);
         void command(char number, double values);
         
         // receive
@@ -50,6 +53,11 @@ class gcode
         double GetValue(char commandLetter);
         void clearBuffer();
         
+        struct BufferFormat {
+            char command;
+            double Value;
+        } BufferList[gcode_Buffer_size];
+
     private:
         String nextComandcommentString;
         bool nextRead = false;
@@ -59,13 +67,15 @@ class gcode
         int NumberOfCommands = 0;
 
         CallbackFunction runCallback;
+        CallbackFunction nextComandCallBack = NULL;
         //double commandsList[gcode_Buffer_size];
         String commandBuffer;
-        struct BufferFormat {
+       /* struct BufferFormat {
             char command;
             double Value;
-        } BufferList[gcode_Buffer_size];
-        int BufferListCount = -1;
+        } BufferList[gcode_Buffer_size];*/
+        int BufferListCount = 0;
+        int BufferListstart = 0;
         
 };
 

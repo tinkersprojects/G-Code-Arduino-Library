@@ -7,9 +7,16 @@ gcode Commands(1,commands);
 double X;
 double Y;
 
+void FinishedCommandLine()
+{
+  Commands.comment("!!"); // ok, rs or !!
+  Commands.comment('X',X);
+  Commands.comment('Y',Y);
+}
+
 void setup()
 {
-  Commands.begin();
+  Commands.begin(FinishedCommandLine);
 }
 
 void loop() 
@@ -22,8 +29,11 @@ void loop()
     if(Commands.availableValue('X'))
       newXValue = Commands.GetValue('X');
     if(Commands.availableValue('Y'))
-      newXValue = Commands.GetValue('Y');
+      newYValue = Commands.GetValue('Y');
 
+    X = newXValue;
+    Y = newYValue;
+    
     gotoLocation(newXValue,newYValue);
   }
 }

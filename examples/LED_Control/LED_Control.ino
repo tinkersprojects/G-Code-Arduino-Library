@@ -3,14 +3,13 @@
 #define LEDpin 13
 #define NumberOfCommands 2
 
-void OnLED();
-void OffLED();
+void homing();
 commandscallback commands[NumberOfCommands] = {{"L1",OnLED},{"L2",OffLED}};
 gcode Commands(NumberOfCommands,commands);
 
 void setup()
 {
-  Commands.begin();
+  Commands.begin("ok"); //responce => ok, rs or !!
   pinMode(LEDpin, OUTPUT);
 }
 
