@@ -1,8 +1,7 @@
 #include <gcode.h>
 #include <DeltaKinematics.h> // Requires Delta Kinematics library from  https://github.com/tinkersprojects/Delta-Kinematics-Library
 
-void homing();
-gcode Commands();
+gcode Commands;
 DeltaKinematics DK(70,300,139,112);
 
 void setup()
