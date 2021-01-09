@@ -35,11 +35,11 @@ class gcode
         gcode(int numbercommands, commandscallback *commandscallbacks_temp);
         gcode(int numbercommands, commandscallback *commandscallbacks_temp, void (*CallBack)());
         void begin();
-        void begin(int bitrate);
+        void begin(unsigned long baud);
         void begin(String nextComandcomment);
-        void begin(int bitrate, String nextComandcomment);
+        void begin(unsigned long baud, String nextComandcomment);
         void begin(void (*_nextComandCallBack)());
-        void begin(int bitrate, void (*_nextComandCallBack)());
+        void begin(unsigned long baud, void (*_nextComandCallBack)());
 
         // SEND 
         void comment(String comment);

@@ -21,7 +21,7 @@ If your project requires computer control or a set of instruction, a library lik
 #### gcode(),<br> gcode(void (*CallBack)()),<br> gcode(int numbercommands, commandscallback *commandArray),<br> gcode(int numbercommands, commandscallback *commandArray, void (*CallBack)());
 This Function is used to declare this class so that it can be used in the program. There are 4 different functions, each with variables that can be set. The *callback* is used to link a call back function used after each command is available. *commandArray* is an array of callback that interupt the program to execute the command. *Numbercommands* is the number of items within commandArray.
 
-#### void begin(),<br> void begin(int bitrate)
+#### void begin(),<br> void begin(unsigned long baud)
 This Function must be called if the serial interface is wanting to be used. *Bitrate* is the bitrate of the serial port. If this is called, there is no need to *Serial.begin();*, it is apart of the begin function.
 
 ### SEND 
