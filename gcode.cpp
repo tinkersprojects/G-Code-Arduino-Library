@@ -54,17 +54,17 @@ void gcode::begin(String nextComandcomment)
   this->clearBuffer();
 }
 
-void gcode::begin(int bitrate)
+void gcode::begin(unsigned long baud)
 {
-  Serial.begin(bitrate);
+  Serial.begin(baud);
   Serial.println("v" +String(gcode_Buffer_version)+" Simple G code");
   nextComandcommentString = "OK!";
   this->clearBuffer();
 }
 
-void gcode::begin(int bitrate, String nextComandcomment)
+void gcode::begin(unsigned long baud, String nextComandcomment)
 {
-  Serial.begin(bitrate);
+  Serial.begin(baud);
   Serial.println("v" +String(gcode_Buffer_version)+" Simple G code");
   nextComandcommentString = nextComandcomment;
   this->clearBuffer();
@@ -78,9 +78,9 @@ void gcode::begin(void (*_nextComandCallBack)())
   this->clearBuffer();
 }
 
-void gcode::begin(int bitrate, void (*_nextComandCallBack)())
+void gcode::begin(unsigned long baud, void (*_nextComandCallBack)())
 {
-  Serial.begin(bitrate);
+  Serial.begin(baud);
   Serial.println("v" +String(gcode_Buffer_version)+" Simple G code");
   nextComandCallBack = _nextComandCallBack;
   this->clearBuffer();
